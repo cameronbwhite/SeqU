@@ -8,9 +8,8 @@ parser = argparse.ArgumentParser(
 	description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
 parser.add_argument(
-	'-f', '--format', metavar='FORMAT',
-	help='use printf style floating-point FORMAT',
-	dest='format')
+	'--version',
+	action='version', version='2.0')
 
 parser.add_argument(
 	'-s', '--separator', metavar='STRING',
@@ -19,7 +18,15 @@ parser.add_argument(
 	default='\n',
 	type=str)
 
-parser.add_argument(
+group = parser.add_mutually_exclusive_group()
+
+group.add_argument(
+	'-f', '--format', metavar='FORMAT',
+	help='use python format style floating-point FORMAT',
+	dest='format', 
+	type=str)
+
+group.add_argument(
 	'-w', '--equal-width',
 	help='equalize width by padding with leading zeroes',
 	dest='equalWidth',
@@ -37,11 +44,20 @@ parser.add_argument(
 
 parser.add_argument(
 	'increment', metavar='INCREMENT',
+	help='The step size',
 	type=int, default=1, nargs='?')
 
 if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	print(reduce(lambda x, y: str(x) + args.separator + str(y),\
-		range(args.first, args.last, args.increment)))
+	if args.format:
+		format = '{{{}}}'.format(args.format)
+	elif args.equalWidth:
+		format = '{{:0{}}}'.format(len(str(args.last)))
+	else:
+		format = '{}'
+
+	print(reduce(lambda x, y: x + args.separator + y,
+		map(lambda a: format.format(a),
+			range(args.first, args.last, args.increment))))
