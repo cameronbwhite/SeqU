@@ -20,5 +20,5 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	for i in range(args.start, args.end):
+	for i in range(args.start, args.end + 1):
 		print(i)
