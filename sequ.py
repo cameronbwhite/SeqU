@@ -5,13 +5,61 @@ import argparse
 import codecs
 from functools import reduce
 
+def number2Roman(number):
+
+    numRomanTable = { 
+      1     : 'i', 
+      5     : 'v', 
+      10    : 'x', 
+      50    : 'l', 
+      100   : 'c', 
+      500   : 'd', 
+      1000  : 'm',
+     }
+
+    roman = ''      
+    i = number
+    for num in reversed(sorted(numRomanTable)):
+        roman += (numRomanTable[num] * (i // num))
+        i = i % num
+
+    return roman
+
+def roman2number(roman):
+
+    numRomanTable = {
+        'i' : 1,
+        'v' : 5,
+        'x' : 10,
+        'l' : 50,
+        'c' : 100,
+        'd' : 500,
+        'm' : 1000,
+    }
+
+    number = 0
+    for r in roman:
+        r = r.lower()
+        number += numRomanTable[r]      
+
+    return number
+    
 # Function which is used as a type for argparse. If the string does 
-# not contain only one character then error thrown.
+# not contain only one character then an error is thrown.
 def char(string):
     string = unescape_control_codes(string)
     if len(string) == 1:
         return string
     raise argparse.ArgumentTypeError('must be a single character')
+
+# Function which is used as a type for argparse. If the string is
+# not in list then an error is thrown.
+def formatWord(word):
+    word = word.lower()
+    if word in ['arabic', 'floating', 'alpha', 'roman']:
+        return word
+    else:
+        raise argparse.ArgumentTypeError('Must be a format Word')
 
 # Control codes are automatically escaped when passed through
 # the command line. The following removes the escaping.
@@ -24,6 +72,10 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     '--version',
     action='version', version='2.0')
+
+parser.add_argument(
+   '-F', '--format-word', 
+   type=formatWord)
 
 group1 = parser.add_mutually_exclusive_group()
 
@@ -95,8 +147,8 @@ if __name__ == '__main__':
         # If a padding was provided then apply it by constructing
         # the format with the supplied padding character and the
         # length of the largest number.
-        format = '{{:{}>{}d}}'.format(args.padding, 
-                                      len(str(args.last)))
+        format = '{{:{}>{}}}'.format(args.padding, 
+                                     len(str(args.last)))
     else:
         # Else the empty format will be used specifing no 
         # formatting.
