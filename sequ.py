@@ -52,17 +52,30 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # Depending on the options used the format will be constructed
+    # differently. 
     if args.format:
+        # If the format option was used then the format given will 
+        # be passed directly.
         format = '{{{}}}'.format(args.format)
     elif args.equalWidth:
+        # If the equalWidth option was used then the format will
+        # pad 0s using the length of the largest number.
         format = '{{:0{}}}'.format(len(str(args.last)))
     else:
+        # Else the empty format will be used specifing no 
+        # formatting.
         format = '{}'
 
-    # control codes are automatically escaped when passed through
+    # Control codes are automatically escaped when passed through
     # the command line. The following statement removes the escaping.
     separator = codecs.getdecoder('unicode_escape')(args.separator)[0]
 
+    # The following statement creates a list of integers using the 
+    # range specified by first, last, and increment. The map 
+    # transform the list into a list of interger strings using the
+    # format given. The reduce concatenates all the strings in the
+    # list together with the separator in between.
     print(reduce(lambda x, y: x + separator + y,
         map(lambda a: format.format(a),
             range(args.first, args.last + 1, args.increment))))
