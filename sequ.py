@@ -60,4 +60,4 @@ if __name__ == '__main__':
 
 	print(reduce(lambda x, y: x + args.separator + y,
 		map(lambda a: format.format(a),
-			range(args.first, args.last, args.increment))))
+			range(args.first, args.last + 1, args.increment))))
