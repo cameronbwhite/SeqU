@@ -5,6 +5,11 @@ import argparse
 import codecs
 from functools import reduce
 
+formatWords = ['arabic', 'ARABIC',
+               'alpha',  'ALPHA',
+               'roman',  'ROMAN',
+               'floating']
+
 def number2Roman(number):
 
     numRomanTable = { 
@@ -20,8 +25,21 @@ def number2Roman(number):
     roman = ''      
     i = number
     for num in reversed(sorted(numRomanTable)):
-        roman += (numRomanTable[num] * (i // num))
-        i = i % num
+        if i == 4:
+            roman += 'iv'
+            i -= 4
+        if i == 9:
+            roman += 'ix'
+            i -= 9
+        elif 50 > i >= 40:
+            roman += 'xl'
+            i -= 40
+        elif 100 > i >= 90:
+            roman += 'xc'
+            i -= 90
+        else:
+            roman += (numRomanTable[num] * (i // num))
+            i = i % num
 
     return roman
 
@@ -43,7 +61,7 @@ def roman2number(roman):
         number += numRomanTable[r]      
 
     return number
-    
+
 # Function which is used as a type for argparse. If the string does 
 # not contain only one character then an error is thrown.
 def char(string):
@@ -55,8 +73,7 @@ def char(string):
 # Function which is used as a type for argparse. If the string is
 # not in list then an error is thrown.
 def formatWord(word):
-    word = word.lower()
-    if word in ['arabic', 'floating', 'alpha', 'roman']:
+    if word in formatWords:
         return word
     else:
         raise argparse.ArgumentTypeError('Must be a format Word')
@@ -65,6 +82,14 @@ def formatWord(word):
 # the command line. The following removes the escaping.
 def unescape_control_codes(string):
     return codecs.getdecoder('unicode_escape')(string)[0]
+
+def srange(formatWord, first, last, increment):
+    if formatWord == 'ROMAN' or formatWord == 'roman':
+        mapping = map(lambda x: number2Roman(x), range(first, last, increment))
+        if formatWord.isupper():
+            mapping = map(lambda x: x.upper(), mapping)
+    return mapping
+
 
 parser = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
