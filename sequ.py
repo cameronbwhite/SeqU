@@ -56,6 +56,9 @@ parser.add_argument(
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
 
+    if start >= stop:
+        yield start
+
     while start < stop:
         yield start
         start += step
