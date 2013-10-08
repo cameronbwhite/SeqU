@@ -53,8 +53,8 @@ parser.add_argument(
     help='The step size',
     type=int, default=1, nargs='?')
 
-if __name__ == '__main__':
-
+def main():
+    
     args = parser.parse_args()
 
     # Depending on the options used the format will be constructed
@@ -84,3 +84,7 @@ if __name__ == '__main__':
     print(reduce(lambda x, y: x + separator + y,
         map(lambda a: format.format(a),
             range(args.first, args.last + 1, args.increment))))
+
+if __name__ == '__main__':
+
+    main()
