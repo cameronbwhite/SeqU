@@ -69,17 +69,17 @@ group2.add_argument(
 parser.add_argument(
     'first', metavar='FIRST',
     help='The first number',
-    type=int)
+    type=float)
 
 parser.add_argument(
     'last', metavar='LAST',
     help='The last number',
-    type=int)
+    type=float)
 
 parser.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
-    type=int, default=1, nargs='?')
+    type=float, default=1, nargs='?')
 
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
@@ -87,7 +87,7 @@ def frange(start, stop, step=1):
     while start < stop:
         yield start
         start += step
-        
+
 if __name__ == '__main__':
 
     args = parser.parse_args()
@@ -118,4 +118,4 @@ if __name__ == '__main__':
     # list together with the separator in between.
     print(reduce(lambda x, y: x + separator + y,
         map(lambda a: format.format(a),
-            range(args.first, args.last + 1, args.increment))))
+            frange(args.first, args.last + 1, args.increment))))
