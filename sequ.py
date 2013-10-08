@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-# Cameron Brandon White
+# Copyright © 2013 Cameron Brandon White
+# This specification describes the "universal sequence" command sequ. 
+# The sequ command is a backward-compatible set of extensions to the 
+# seq UNIX command. There are many implementations of seq out there: 
+# this specification is built on the seq supplied with GNU Coreutils 
+# version 8.21.
 
 import argparse
 import codecs
