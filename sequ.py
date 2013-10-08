@@ -81,6 +81,13 @@ parser.add_argument(
     help='The step size',
     type=int, default=1, nargs='?')
 
+def frange(start, stop, step=1):
+    """A range function that accepts floats"""
+
+    while start < stop:
+        yield start
+        start += step
+        
 if __name__ == '__main__':
 
     args = parser.parse_args()
