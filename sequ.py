@@ -88,7 +88,7 @@ def frange(start, stop, step=1):
         yield start
         start += step
 
-if __name__ == '__main__':
+def main():
 
     args = parser.parse_args()
 
@@ -119,3 +119,8 @@ if __name__ == '__main__':
     print(reduce(lambda x, y: x + separator + y,
         map(lambda a: format.format(a),
             frange(args.first, args.last + 1, args.increment))))
+    
+if __name__ == '__main__':
+
+    main()
+
