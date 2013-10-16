@@ -18,11 +18,19 @@ NUMBER_TO_ROMAN = {
 class Roman(object):
 
     def __init__(self, number):
-
-        self._roman = ''
-        for i in reversed(sorted(NUMBER_TO_ROMAN)):
-            self._roman += NUMBER_TO_ROMAN[i] * (number // i)
-            number %= i
+    
+        if isinstance(number, int): 
+            if number <= 0:
+                raise ValueError('number must be greater than 0')
+            self._roman = ''
+            for i in reversed(sorted(NUMBER_TO_ROMAN)):
+                self._roman += NUMBER_TO_ROMAN[i] * (number // i)
+                number %= i
+        elif isinstance(number, str):
+            self._roman = number
+            self.toNumber()
+        elif isinstance(number, Roman):
+            self._roman = number._roman
 
     def __str__(self):
 
@@ -41,6 +49,8 @@ class Roman(object):
             while NUMBER_TO_ROMAN[i] in roman:
                 number += i
                 roman = roman.replace(NUMBER_TO_ROMAN[i], '', 1)
+        if roman:
+            raise SyntaxError('Invalid Roman number')
         return number
 
 
