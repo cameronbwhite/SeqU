@@ -9,7 +9,7 @@ from functools import reduce
 FORMAT_WORDS = ['arabic', 'ARABIC',
                'alpha',  'ALPHA',
                'roman',  'ROMAN',
-               'floating']
+               'floating', 'FLOATING']
 
 # Function which is used as a type for argparse. If the string does 
 # not contain only one character then an error is thrown.
@@ -40,13 +40,6 @@ def romanType(number):
 def unescape_control_codes(string):
     return codecs.getdecoder('unicode_escape')(string)[0]
 
-def srange(formatWord, first, last, increment):
-    if formatWord == 'ROMAN' or formatWord == 'roman':
-        mapping = map(lambda x: number2Roman(x), range(first, last, increment))
-        if formatWord.isupper():
-            mapping = map(lambda x: x.upper(), mapping)
-    return mapping
-
 PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
@@ -56,6 +49,8 @@ PARSER.add_argument(
 
 PARSER.add_argument(
    '-F', '--format-word',
+   dest='formatWord',
+   default='arabic',
    type=formatWordType)
 
 GROUP1 = PARSER.add_mutually_exclusive_group()
@@ -78,7 +73,7 @@ GROUP2 = PARSER.add_mutually_exclusive_group()
 GROUP2.add_argument(
     '-f', '--format', metavar='FORMAT',
     help='use python format style floating-point FORMAT',
-    dest='format',
+    dest='formatStr',
     type=str)
 
 GROUP2.add_argument(
@@ -99,20 +94,18 @@ GROUP2.add_argument(
     dest='padding',
     const='0', action='store_const')
 
-GROUP2.add_argument(
+PARSER.add_argument(
     'first', metavar='FIRST',
-    help='The first number',
-    type=int)
+    help='The first number')
 
-GROUP2.add_argument(
+PARSER.add_argument(
     'last', metavar='LAST',
-    help='The last number',
-    type=int)
+    help='The last number')
 
 PARSER.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
-    type=int, default=1, nargs='?')
+    default=1, nargs='?')
 
 def main():
 
@@ -144,7 +137,41 @@ def main():
     # list together with the separator in between.
     print(reduce(lambda x, y: x + separator + y,
         map(lambda a: formatStr.format(a),
-            range(args.first, args.last + 1, args.increment))))
+            sequRange(args.formatWord, 
+                      args.first, args.last, args.increment))))
+
+def sequRange(formatWord, first, last, increment):
+    if formatWord in ['roman', 'ROMAN']:
+        mapping = map(lambda x: str(Roman(x)),
+                range(Roman(first).toNumber(), 
+                      Roman(last).toNumber() + 1, 
+                      Roman(increment).toNumber()))
+        if formatWord.isupper():
+            mapping = map(lambda x: x.upper(), mapping)
+    if formatWord in ['arabic', 'ARABIC']:
+        mapping = range(first, last + 1, increment)
+    if formatWord in ['floating', 'FLOATING']:
+        mapping = frange(first, last + 1.0, increment)
+    if formatWord in ['alpha', 'ALPHA']:
+        if isinstance(first, str):
+            first = ord(first)
+        if isinstance(last, str):
+            last = ord(last)
+        if isinstance(increment, str):
+            increment = ord(increment)
+        mapping = map(lambda x: chr(x), range(first, last + 1, increment)) 
+        if formatWord.isupper():
+            mapping = map(lambda x: x.upper(), mapping)
+    return mapping
+
+def frange(start, stop, step=1.0):
+
+    if start >= stop:
+        yield start
+
+    while start < stop:
+        yield start
+        start += step
 
 if __name__ == '__main__':
 
