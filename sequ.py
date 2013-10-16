@@ -3,6 +3,7 @@
 
 import argparse
 import codecs
+from roman import Roman
 from functools import reduce
 
 FORMAT_WORDS = ['arabic', 'ARABIC',
@@ -12,7 +13,7 @@ FORMAT_WORDS = ['arabic', 'ARABIC',
 
 # Function which is used as a type for argparse. If the string does 
 # not contain only one character then an error is thrown.
-def char(string):
+def charType(string):
     string = unescape_control_codes(string)
     if len(string) == 1:
         return string
@@ -20,11 +21,19 @@ def char(string):
 
 # Function which is used as a type for argparse. If the string is
 # not in list then an error is thrown.
-def formatWord(word):
+def formatWordType(word):
     if word in FORMAT_WORDS:
         return word
     else:
         raise argparse.ArgumentTypeError('Must be a format Word')
+
+# Function which is used as a type for argparse. If the argument
+# is not a type of Roman number then an error is thrown.
+def romanType(number):
+    try:
+        return Roman(number)
+    except:
+        raise argparse.ArgumentTypeError('Must be a valid roman number')
 
 # Control codes are automatically escaped when passed through
 # the command line. The following removes the escaping.
@@ -38,7 +47,6 @@ def srange(formatWord, first, last, increment):
             mapping = map(lambda x: x.upper(), mapping)
     return mapping
 
-
 PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
@@ -48,7 +56,7 @@ PARSER.add_argument(
 
 PARSER.add_argument(
    '-F', '--format-word',
-   type=formatWord)
+   type=formatWordType)
 
 GROUP1 = PARSER.add_mutually_exclusive_group()
 
@@ -77,7 +85,7 @@ GROUP2.add_argument(
     '-p', '--pad', metavar='CHAR',
     help='equalize width by padding with the padding provided',
     dest='padding',
-    type=char)
+    type=charType)
 
 GROUP2.add_argument(
     '-P', '--pad-spaces',
