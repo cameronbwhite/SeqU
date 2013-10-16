@@ -16,9 +16,13 @@ NUMBER_TO_ROMAN = {
  }
 
 class Roman(object):
+    """ Class to represent Roman numbers """    
 
     def __init__(self, number):
-    
+        """ Roman can be initilized with a positive integer or
+        a string with a valid roman number. It can also act as
+        a copy constructor if number is a another Roman.
+        """
         if isinstance(number, int): 
             if number <= 0:
                 raise ValueError('number must be greater than 0')
@@ -27,7 +31,7 @@ class Roman(object):
                 self._roman += NUMBER_TO_ROMAN[i] * (number // i)
                 number %= i
         elif isinstance(number, str):
-            self._roman = number
+            self._roman = number.tolower()
             self.toNumber()
         elif isinstance(number, Roman):
             self._roman = number._roman
@@ -41,6 +45,7 @@ class Roman(object):
         return repr(self._roman)
 
     def toNumber(self):
+        """ Return the integer representation of the number """
 
         number = 0
         roman = self._roman
