@@ -11,33 +11,82 @@ FORMAT_WORDS = ['arabic', 'ARABIC',
                'roman',  'ROMAN',
                'floating', 'FLOATING']
 
-# Function which is used as a type for argparse. If the string does 
-# not contain only one character then an error is thrown.
+def sequRange(formatWord, first, last, increment):
+    """ Function for sequ to generate a range based on the
+    formatWord.
+    """
+
+    if formatWord in ['roman', 'ROMAN']:
+        mapping = map(lambda x: str(Roman(x)),
+                range(Roman(first).toNumber(), 
+                      Roman(last).toNumber() + 1, 
+                      Roman(increment).toNumber()))
+        if formatWord.isupper():
+            mapping = map(lambda x: x.upper(), mapping)
+
+    elif formatWord in ['arabic', 'ARABIC']:
+        mapping = range(first, last + 1, increment)
+
+    elif formatWord in ['floating', 'FLOATING']:
+        mapping = frange(first, last + 1.0, increment)
+
+    elif formatWord in ['alpha', 'ALPHA']:
+        if isinstance(first, str):
+            first = ord(first)
+        if isinstance(last, str):
+            last = ord(last)
+        if isinstance(increment, str):
+            increment = ord(increment)
+        mapping = map(lambda x: chr(x), range(first, last + 1, increment)) 
+        if formatWord.isupper():
+            mapping = map(lambda x: x.upper(), mapping)
+
+    return mapping
+
+def frange(start, stop, step=1.0):
+    """ Floating point range function """
+
+    if start >= stop:
+        yield start
+
+    while start < stop:
+        yield start
+        start += step
+
 def charType(string):
+    """ Function which is used as a type for argparse.
+    If the string does not contain only one character
+    then an error is thrown.
+    """
     string = unescape_control_codes(string)
     if len(string) == 1:
         return string
     raise argparse.ArgumentTypeError('must be a single character')
 
-# Function which is used as a type for argparse. If the string is
-# not in list then an error is thrown.
 def formatWordType(word):
+    """ Function which is used as a type for argparse.
+    If the string is not in list then an error is thrown.
+    """
     if word in FORMAT_WORDS:
         return word
     else:
         raise argparse.ArgumentTypeError('Must be a format Word')
 
-# Function which is used as a type for argparse. If the argument
-# is not a type of Roman number then an error is thrown.
 def romanType(number):
+    """ Function which is used as a type for argparse.
+    If the argument is not a type of Roman number then
+    an error is thrown.
+    """
     try:
         return Roman(number)
     except:
         raise argparse.ArgumentTypeError('Must be a valid roman number')
 
-# Control codes are automatically escaped when passed through
-# the command line. The following removes the escaping.
 def unescape_control_codes(string):
+    """ Control codes are automatically escaped when 
+    passed through the command line. The following 
+    removes the escaping.
+    """
     return codecs.getdecoder('unicode_escape')(string)[0]
 
 PARSER = argparse.ArgumentParser(
@@ -139,39 +188,6 @@ def main():
         map(lambda a: formatStr.format(a),
             sequRange(args.formatWord, 
                       args.first, args.last, args.increment))))
-
-def sequRange(formatWord, first, last, increment):
-    if formatWord in ['roman', 'ROMAN']:
-        mapping = map(lambda x: str(Roman(x)),
-                range(Roman(first).toNumber(), 
-                      Roman(last).toNumber() + 1, 
-                      Roman(increment).toNumber()))
-        if formatWord.isupper():
-            mapping = map(lambda x: x.upper(), mapping)
-    if formatWord in ['arabic', 'ARABIC']:
-        mapping = range(first, last + 1, increment)
-    if formatWord in ['floating', 'FLOATING']:
-        mapping = frange(first, last + 1.0, increment)
-    if formatWord in ['alpha', 'ALPHA']:
-        if isinstance(first, str):
-            first = ord(first)
-        if isinstance(last, str):
-            last = ord(last)
-        if isinstance(increment, str):
-            increment = ord(increment)
-        mapping = map(lambda x: chr(x), range(first, last + 1, increment)) 
-        if formatWord.isupper():
-            mapping = map(lambda x: x.upper(), mapping)
-    return mapping
-
-def frange(start, stop, step=1.0):
-
-    if start >= stop:
-        yield start
-
-    while start < stop:
-        yield start
-        start += step
 
 if __name__ == '__main__':
 
