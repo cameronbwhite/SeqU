@@ -10,58 +10,6 @@ FORMAT_WORDS = ['arabic', 'ARABIC',
                'roman',  'ROMAN',
                'floating']
 
-def number2Roman(number):
-
-    numRomanTable = { 
-      1     : 'i', 
-      5     : 'v', 
-      10    : 'x', 
-      50    : 'l', 
-      100   : 'c', 
-      500   : 'd', 
-      1000  : 'm',
-     }
-
-    roman = ''      
-    i = number
-    for num in reversed(sorted(numRomanTable)):
-        if i == 4:
-            roman += 'iv'
-            i -= 4
-        if i == 9:
-            roman += 'ix'
-            i -= 9
-        elif 50 > i >= 40:
-            roman += 'xl'
-            i -= 40
-        elif 100 > i >= 90:
-            roman += 'xc'
-            i -= 90
-        else:
-            roman += (numRomanTable[num] * (i // num))
-            i = i % num
-
-    return roman
-
-def roman2number(roman):
-
-    numRomanTable = {
-        'i' : 1,
-        'v' : 5,
-        'x' : 10,
-        'l' : 50,
-        'c' : 100,
-        'd' : 500,
-        'm' : 1000,
-    }
-
-    number = 0
-    for r in roman:
-        r = r.lower()
-        number += numRomanTable[r]      
-
-    return number
-
 # Function which is used as a type for argparse. If the string does 
 # not contain only one character then an error is thrown.
 def char(string):
