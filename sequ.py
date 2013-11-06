@@ -47,7 +47,7 @@ PARSER.add_argument(
 PARSER.add_argument(
     'last', metavar='LAST',
     help='The last number',
-    type=float)
+    type=float, default=None, nargs='?')
 
 PARSER.add_argument(
     'increment', metavar='INCREMENT',
@@ -57,9 +57,6 @@ PARSER.add_argument(
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
 
-    if start >= stop:
-        yield start
-
     while start < stop:
         yield start
         start += step
@@ -68,10 +65,16 @@ def main():
 
     args = PARSER.parse_args()
 
+    # Handle the case where only one positional argument is
+    # given.
+    if args.last is None:
+        args.last = args.first
+        args.first = 1
+
     # If any of the arguments where given as floating-point
     # numbers than the output will be formated as floating-
     # point aswell.
-    if list(filter(lambda x: x%1,\
+    if list(filter(lambda x: x%1, \
             [args.first, args.last, args.increment])):
         type_str = 'g'
     else:
@@ -101,9 +104,12 @@ def main():
     # transform the list into a list of interger strings using the
     # format given. The reduce concatenates all the strings in the
     # list together with the separator in between.
-    print(reduce(lambda x, y: x + separator + y,
-        map(lambda a: format_str.format(a),
-            frange(args.first, args.last + 1, args.increment))))
+    try:
+        print(reduce(lambda x, y: x + separator + y,
+            map(lambda a: format_str.format(a),
+                frange(args.first, args.last + 1, args.increment))))
+    except TypeError:
+        pass
 
 if __name__ == '__main__':
 
