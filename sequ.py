@@ -29,13 +29,13 @@ GROUP = PARSER.add_mutually_exclusive_group()
 GROUP.add_argument(
     '-f', '--format', metavar='FORMAT',
     help='use python format style floating-point FORMAT',
-    dest='format',
+    dest='format_str',
     type=str)
 
 GROUP.add_argument(
     '-w', '--equal-width',
     help='equalize width by padding with leading zeroes',
-    dest='equalWidth',
+    dest='equal_width',
     default=False, const=True, action='store_const')
 
 PARSER.add_argument(
@@ -69,18 +69,18 @@ def main():
 
     # Depending on the options used the format will be constructed
     # differently.
-    if args.format:
+    if args.format_str:
         # If the format option was used then the format given will
         # be passed directly.
-        format = '{{{}}}'.format(args.format)
-    elif args.equalWidth:
+        format_str = '{{{}}}'.format(args.format_str)
+    elif args.equal_width:
         # If the equalWidth option was used then the format will
         # pad 0s using the length of the largest number.
-        format = '{{:0{}}}'.format(len(str(args.last)))
+        format_str = '{{:0{}}}'.format(len(str(args.last)))
     else:
         # Else the empty format will be used specifing no
         # formatting.
-        format = '{}'
+        format_str = '{}'
 
     # Control codes are automatically escaped when passed through
     # the command line. The following statement removes the escaping.
@@ -92,7 +92,7 @@ def main():
     # format given. The reduce concatenates all the strings in the
     # list together with the separator in between.
     print(reduce(lambda x, y: x + separator + y,
-        map(lambda a: format.format(a),
+        map(lambda a: format_str.format(a),
             frange(args.first, args.last + 1, args.increment))))
 
 if __name__ == '__main__':
