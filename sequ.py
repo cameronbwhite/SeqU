@@ -8,6 +8,7 @@
 
 import argparse
 import codecs
+import sys
 from functools import reduce
 
 PARSER = argparse.ArgumentParser(
@@ -107,3 +108,5 @@ def main():
 if __name__ == '__main__':
 
     main()
+    sys.exit()
+
