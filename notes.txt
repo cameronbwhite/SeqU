@@ -1,0 +1,13 @@
+This program is extremly simple. It will use argparse to accept two
+positional arguments FIRST and LAST. The rest of the program will
+use range() and print out each value. The testing of the program will
+be done with the unittest framework which comes with python.
+
+test can be ran with the following command
+$ python -m unittest tests.py
+
+The following is the results of the tests
+----------------------------------------------------------------------
+Ran 5 tests in 0.266s
+
+OK
