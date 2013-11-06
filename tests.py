@@ -17,7 +17,8 @@ class TestSeqU(unittest.TestCase):
     
     def test_onearg(self):
         status, text = subprocess.getstatusoutput('./sequ.py 1')
-        self.assertNotEqual(status, 0)
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '1')
     
     def test_big2small(self):
         status, text = subprocess.getstatusoutput('./sequ.py 10 0')
