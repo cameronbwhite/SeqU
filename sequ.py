@@ -8,22 +8,22 @@
 
 import argparse
 
-parser = argparse.ArgumentParser(
-	description='Print the numbers from start to end.')
+PARSER = argparse.ArgumentParser(
+	description='Print the numbers from FIRST to LAST.')
 
-parser.add_argument(
-	'start',
+PARSER.add_argument(
+	'FIRST',
 	help='The starting place',
 	type=int)
 
-parser.add_argument(
-	'end',
+PARSER.add_argument(
+	'LAST',
 	help='The ending place',
 	type=int)
 
 if __name__ == '__main__':
 
-	args = parser.parse_args()
+    ARGS = PARSER.parse_args()
 
-	for i in range(args.start, args.end + 1):
-		print(i)
+    for i in range(ARGS.first, ARGS.last + 1):
+        print(i)
