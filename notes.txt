@@ -3,6 +3,13 @@ positional arguments FIRST and LAST. The rest of the program will
 use range() and print out each value. The testing of the program will
 be done with the unittest framework which comes with python.
 
+pseudocode:
+
+setup argparse
+parse arguments
+from first to last
+    print i
+
 test can be ran with the following command
 $ python -m unittest tests.py
 
