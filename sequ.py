@@ -25,5 +25,5 @@ if __name__ == '__main__':
 
     ARGS = PARSER.parse_args()
 
-    for i in range(ARGS.first, ARGS.last + 1):
+    for i in range(ARGS.FIRST, ARGS.LAST + 1):
         print(i)
