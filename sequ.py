@@ -10,45 +10,45 @@ import argparse
 import codecs
 from functools import reduce
 
-parser = argparse.ArgumentParser(
+PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
-parser.add_argument(
+PARSER.add_argument(
     '--version',
     action='version', version='2.0')
 
-parser.add_argument(
+PARSER.add_argument(
     '-s', '--separator', metavar='STRING',
     help='use the STRING to separate numbers',
     dest='separator',
     default='\n',
     type=str)
 
-group = parser.add_mutually_exclusive_group()
+GROUP = PARSER.add_mutually_exclusive_group()
 
-group.add_argument(
+GROUP.add_argument(
     '-f', '--format', metavar='FORMAT',
     help='use python format style floating-point FORMAT',
-    dest='format', 
+    dest='format',
     type=str)
 
-group.add_argument(
+GROUP.add_argument(
     '-w', '--equal-width',
     help='equalize width by padding with leading zeroes',
     dest='equalWidth',
     default=False, const=True, action='store_const')
 
-parser.add_argument(
+PARSER.add_argument(
     'first', metavar='FIRST',
     help='The first number',
     type=float)
 
-parser.add_argument(
+PARSER.add_argument(
     'last', metavar='LAST',
     help='The last number',
     type=float)
 
-parser.add_argument(
+PARSER.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
     type=float, default=1, nargs='?')
@@ -65,12 +65,12 @@ def frange(start, stop, step=1):
 
 def main():
 
-    args = parser.parse_args()
+    args = PARSER.parse_args()
 
     # Depending on the options used the format will be constructed
-    # differently. 
+    # differently.
     if args.format:
-        # If the format option was used then the format given will 
+        # If the format option was used then the format given will
         # be passed directly.
         format = '{{{}}}'.format(args.format)
     elif args.equalWidth:
@@ -78,7 +78,7 @@ def main():
         # pad 0s using the length of the largest number.
         format = '{{:0{}}}'.format(len(str(args.last)))
     else:
-        # Else the empty format will be used specifing no 
+        # Else the empty format will be used specifing no
         # formatting.
         format = '{}'
 
@@ -86,8 +86,8 @@ def main():
     # the command line. The following statement removes the escaping.
     separator = codecs.getdecoder('unicode_escape')(args.separator)[0]
 
-    # The following statement creates a list of integers using the 
-    # range specified by first, last, and increment. The map 
+    # The following statement creates a list of integers using the
+    # range specified by first, last, and increment. The map
     # transform the list into a list of interger strings using the
     # format given. The reduce concatenates all the strings in the
     # list together with the separator in between.
