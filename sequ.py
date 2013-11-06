@@ -67,6 +67,15 @@ def main():
 
     args = PARSER.parse_args()
 
+    # If any of the arguments where given as floating-point
+    # numbers than the output will be formated as floating-
+    # point aswell.
+    if list(filter(lambda x: x%1,\
+            [args.first, args.last, args.increment])):
+        type_str = 'g'
+    else:
+        type_str = '.0f'
+
     # Depending on the options used the format will be constructed
     # differently.
     if args.format_str:
@@ -74,13 +83,13 @@ def main():
         # be passed directly.
         format_str = '{{{}}}'.format(args.format_str)
     elif args.equal_width:
-        # If the equalWidth option was used then the format will
+        # If the equal_width option was used then the format will
         # pad 0s using the length of the largest number.
-        format_str = '{{:0{}}}'.format(len(str(args.last)))
+        format_str = '{{:0{}{}}}'.format(len(str(args.last)), type_str)
     else:
         # Else the empty format will be used specifing no
         # formatting.
-        format_str = '{}'
+        format_str = '{{:{}}}'.format(type_str)
 
     # Control codes are automatically escaped when passed through
     # the command line. The following statement removes the escaping.
