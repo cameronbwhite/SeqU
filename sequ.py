@@ -126,7 +126,7 @@ def main():
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
     # transform the list into a list of interger strings using the
-    # format given. separate place the separate between each element.
+    # format given. separate places the separator between each element.
     for i in separate(separator, map(lambda a: format_str.format(a),
             frange(args.first, args.last + 1, args.increment))):
         print(i, end='')
