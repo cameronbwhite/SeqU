@@ -96,6 +96,10 @@ def main():
         map(lambda parts: len(parts[1]) if len(parts) == 2 else 0,
             map(lambda number: str(number).split('.'), 
                 [args.first, args.last, args.increment])))
+    
+    # The length of the largest number.
+    max_length = len(str(int(args.last))) + fractional_length 
+    max_length += 1 if fractional_length else 0 # for the '.'
 
     # Depending on the options used the format will be constructed
     # differently.
@@ -106,8 +110,7 @@ def main():
     elif args.equal_width:
         # If the equal_width option was used then the format will
         # pad 0s using the length of the largest number.
-        format_str = '{{:0{}.{}f}}'.format(
-                len(str(args.last)), fractional_length)
+        format_str = '{{:0{}.{}f}}'.format(max_length, fractional_length)
     else:
         # Else the default format will be used.
         format_str = '{{:.{}f}}'.format(fractional_length)

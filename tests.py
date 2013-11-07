@@ -98,3 +98,20 @@ class TestSeqU(unittest.TestCase):
     def test_invalid_type(self):
         status, text = subprocess.getstatusoutput('./sequ.py a 0')
         self.assertNotEqual(status, 0)
+
+    def test_separator_1(self):
+        status, text = subprocess.getstatusoutput('./sequ.py -s \':\' 1 10')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '1:2:3:4:5:6:7:8:9:10')
+        
+    def test_equalwidth_1(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -w 1 100 20')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '001\n021\n041\n061\n081')
+
+    def test_equalwidth_2(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -w 1 100 20.1')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '001.0\n021.1\n041.2\n061.3\n081.4')
