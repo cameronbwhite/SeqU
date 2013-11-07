@@ -136,9 +136,10 @@ def main():
     for i in separate(separator, map(lambda a: format_str.format(a),
             frange(args.first, args.last + 1, args.increment))):
         print(i, end='')
+    
+    print()
 
 if __name__ == '__main__':
 
     main()
     sys.exit()
-
