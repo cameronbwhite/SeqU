@@ -27,42 +27,42 @@ class TestSeqU(unittest.TestCase):
         self.assertEqual(text, '0.0\n1.0\n2.0\n3.0\n4.0\n5.0')
 
     def test_threeargs_allint(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0 5 2')
+        status, text = subprocess.getstatusoutput('./sequ.py 0 2 5')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0\n2\n4')
 
     def test_threeargs_allfloat(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0.0 5.0 2.0')
+        status, text = subprocess.getstatusoutput('./sequ.py 0.0 2.0 5.0')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_onefloat_1(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0.0 5 2')
+        status, text = subprocess.getstatusoutput('./sequ.py 0.0 2 5')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_onefloat_2(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0 5.0 2')
+        status, text = subprocess.getstatusoutput('./sequ.py 0 2 5.0')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_onefloat_3(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0 5 2.0')
+        status, text = subprocess.getstatusoutput('./sequ.py 0 2.0 5')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_twofloat_1(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0.0 5.0 2')
+        status, text = subprocess.getstatusoutput('./sequ.py 0.0 2 5.0')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_twofloat_2(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0.0 5 2.0')
+        status, text = subprocess.getstatusoutput('./sequ.py 0.0 2.0 5')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
 
     def test_threeargs_twofloat_3(self):
-        status, text = subprocess.getstatusoutput('./sequ.py 0 5.0 2.0')
+        status, text = subprocess.getstatusoutput('./sequ.py 0 2.0 5.0')
         self.assertEqual(status, 0)
         self.assertEqual(text, '0.0\n2.0\n4.0')
     
@@ -106,12 +106,12 @@ class TestSeqU(unittest.TestCase):
         
     def test_equalwidth_1(self):
         status, text = subprocess.getstatusoutput(
-                './sequ.py -w 1 100 20')
+                './sequ.py -w 1 20 100')
         self.assertEqual(status, 0)
         self.assertEqual(text, '001\n021\n041\n061\n081')
 
     def test_equalwidth_2(self):
         status, text = subprocess.getstatusoutput(
-                './sequ.py -w 1 100 20.1')
+                './sequ.py -w 1 20.1 100')
         self.assertEqual(status, 0)
         self.assertEqual(text, '001.0\n021.1\n041.2\n061.3\n081.4')
