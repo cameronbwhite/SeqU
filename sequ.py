@@ -13,7 +13,7 @@ from functools import reduce
 
 def floatIntType(value):
     """ Function which is used as a type for argparse.
-    If the argument is not a valid float or int an 
+    If the argument is not a valid float or int an
     error is thrown. The type returned will be int if
     no fractional component is found otherwise the type
     will be a float."""
@@ -109,8 +109,7 @@ def main():
         format_str = '{{:0{}.{}f}}'.format(
                 len(str(args.last)), fractional_length)
     else:
-        # Else the empty format will be used specifing no
-        # formatting.
+        # Else the default format will be used.
         format_str = '{{:.{}f}}'.format(fractional_length)
 
     # Control codes are automatically escaped when passed through
