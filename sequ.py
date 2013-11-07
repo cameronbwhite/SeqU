@@ -166,17 +166,17 @@ GROUP2.add_argument(
 PARSER.add_argument(
     'first', metavar='FIRST',
     help='The first number',
-    type=floatIntType)
-
-PARSER.add_argument(
-    'last', metavar='LAST',
-    help='The last number',
-    type=floatIntType, default=None, nargs='?')
+    type=floatIntType, default=1, nargs='?')
 
 PARSER.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
     type=floatIntType, default=1, nargs='?')
+
+PARSER.add_argument(
+    'last', metavar='LAST',
+    help='The last number',
+    type=floatIntType)
 
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
@@ -199,12 +199,6 @@ def separate(separator, iterable):
 def main():
 
     args = PARSER.parse_args()
-
-    # Handle the case where only one positional argument is
-    # given.
-    if args.last is None:
-        args.last = args.first
-        args.first = 1
     
     # Determine the length of the largest fractional part of the 
     # three positional arguments. From bottom to top, right to left
@@ -241,12 +235,12 @@ def main():
 
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
-    # transform the list into a list of integer strings using the
+    # transforms the list into a list of interger strings using the
     # format given. separate places the separator between each element.
     for i in separate(separator, map(lambda a: format_str.format(a),
             frange(args.first, args.last + 1, args.increment))):
         print(i, end='')
-
+    
     print()
 
 if __name__ == '__main__':
