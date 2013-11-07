@@ -1,10 +1,15 @@
 #!/usr/bin/env python
-# Cameron Brandon White
+# Copyright © 2013 Cameron Brandon White
+# This specification describes the "universal sequence" command sequ. 
+# The sequ command is a backward-compatible set of extensions to the 
+# seq UNIX command. There are many implementations of seq out there: 
+# this specification is built on the seq supplied with GNU Coreutils 
+# version 8.21.
 
 import argparse
 import codecs
 from roman import Roman
-from functools import reduce
+import sys
 
 FORMAT_WORDS = ['arabic', 'ARABIC',
                'alpha',  'ALPHA',
@@ -89,6 +94,21 @@ def unescape_control_codes(string):
     """
     return codecs.getdecoder('unicode_escape')(string)[0]
 
+def floatIntType(value):
+    """ Function which is used as a type for argparse.
+    If the argument is not a valid float or int an
+    error is thrown. The type returned will be int if
+    no fractional component is found otherwise the type
+    will be a float."""
+    if '.' in value:
+        value_type = float
+    else:
+        value_type = int
+    try:
+        return value_type(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError('must be a valid float or int')
+    
 PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
@@ -122,7 +142,7 @@ GROUP2 = PARSER.add_mutually_exclusive_group()
 GROUP2.add_argument(
     '-f', '--format', metavar='FORMAT',
     help='use python format style floating-point FORMAT',
-    dest='formatStr',
+    dest='format_str',
     type=str)
 
 GROUP2.add_argument(
@@ -145,50 +165,91 @@ GROUP2.add_argument(
 
 PARSER.add_argument(
     'first', metavar='FIRST',
-    help='The first number')
+    help='The first number',
+    type=floatIntType)
 
 PARSER.add_argument(
     'last', metavar='LAST',
-    help='The last number')
+    help='The last number',
+    type=floatIntType, default=None, nargs='?')
 
 PARSER.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
-    default=1, nargs='?')
+    type=floatIntType, default=1, nargs='?')
+
+def frange(start, stop, step=1):
+    """A range function that accepts floats"""
+
+    while start < stop:
+        yield float(start)
+        start += step
+
+def separate(separator, iterable):
+    """ seperate generates a iterable with the
+    separator element between every element of the
+    given iterable """ 
+    it = iter(iterable)
+    value = next(it)
+    yield value
+    for i in it:
+        yield separator
+        yield i
 
 def main():
 
     args = PARSER.parse_args()
 
+    # Handle the case where only one positional argument is
+    # given.
+    if args.last is None:
+        args.last = args.first
+        args.first = 1
+    
+    # Determine the length of the largest fractional part of the 
+    # three positional arguments. From bottom to top, right to left
+    # this statement does the following. First the number is turned
+    # into a string then split into its integer and fractional parts,
+    # next if the number had a fractional part the len of it is 
+    # taken, finally the largest length is return.
+    fractional_length = max(
+        map(lambda parts: len(parts[1]) if len(parts) == 2 else 0,
+            map(lambda number: str(number).split('.'), 
+                [args.first, args.last, args.increment])))
+    
+    # The length of the largest number.
+    max_length = len(str(int(args.last))) + fractional_length 
+    max_length += 1 if fractional_length else 0 # for the '.'
+
     # Depending on the options used the format will be constructed
     # differently.
-    if args.formatStr:
+    if args.format_str:
         # If the format option was used then the format given will
         # be passed directly.
-        formatStr = '{{{}}}'.format(args.formatStr)
+        format_str = '{{{}}}'.format(args.format_str)
     elif args.padding:
         # If a padding was provided then apply it by constructing
         # the format with the supplied padding character and the
         # length of the largest number.
-        formatStr = '{{:{}>{}}}'.format(args.padding,
-                                     len(str(args.last)))
+        format_str = '{{:{}>{}.{}f}}'.format(
+                args.padding, max_length, fractional_length)
     else:
-        # Else the empty format will be used specifing no
-        # formatting.
-        formatStr = '{}'
+        # Else the default format will be used.
+        format_str = '{{:.{}f}}'.format(fractional_length)
 
     separator = unescape_control_codes(args.separator)
 
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
-    # transform the list into a list of interger strings using the
-    # format given. The reduce concatenates all the strings in the
-    # list together with the separator in between.
-    print(reduce(lambda x, y: x + separator + y,
-        map(lambda a: formatStr.format(a),
-            sequRange(args.formatWord, 
-                      args.first, args.last, args.increment))))
+    # transform the list into a list of integer strings using the
+    # format given. separate places the separator between each element.
+    for i in separate(separator, map(lambda a: format_str.format(a),
+            frange(args.first, args.last + 1, args.increment))):
+        print(i, end='')
+
+    print()
 
 if __name__ == '__main__':
 
     main()
+    sys.exit()

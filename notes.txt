@@ -1,0 +1,41 @@
+## Plan ##
+
+My plan during CL1 was to seperate the functionality of the program 
+as much as possible. I identified three main parts to the program; user
+interface, format construction, and sequence generation.
+
+To develop the user interface I used the argparse module, I used
+python's string formats for format construction, and I used functional
+statement to generate the sequence.
+
+I had to figure out a way that argparse would except numbers of type
+int of float. I used a function which looked for the a '.' in the 
+number. If the number exist then argparse returned a float else it
+returned a int.
+
+I then needed away to figure out how to determine if I should print the
+numbers as floats or ints. My first solution was to print floats if any
+of the numbers where floats and print ints otherwise. I would use
+different format characters foreach. The problem with this solution is
+I wanted a way for the user to control how may fractional digits where
+printed. Plus If I did not limit the fractional digits it would be 
+impossible to use equal-width. My next solution was to look for the the
+length of the longest fractional part instead of checking the numbers
+types. This way if the user used all int the longest fractional part
+length would be 0. With this solution I could just use one formating
+character.
+
+The last problem I had was that the program would fail on large numbers.
+The reason was because I was using reduce. reduces had was not lazy like
+the other functional functions I was using. I solved this problem by 
+replacing the reduce with a generator that I wrote called seperate. This
+way the program was lazy and fast.
+
+## Testing Results ##
+
+python -m unittest tests.py 
+......................
+----------------------------------------------------------------------
+Ran 22 tests in 1.176s
+
+OK
