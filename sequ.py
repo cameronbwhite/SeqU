@@ -9,7 +9,6 @@
 import argparse
 import codecs
 import sys
-from functools import reduce
 
 def floatIntType(value):
     """ Function which is used as a type for argparse.
