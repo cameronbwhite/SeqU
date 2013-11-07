@@ -76,6 +76,17 @@ def frange(start, stop, step=1):
         yield float(start)
         start += step
 
+def separate(separator, iterable):
+    """ seperate generates a iterable with the
+    separator element between every element of the
+    given iterable """ 
+    it = iter(iterable)
+    value = next(it)
+    yield value
+    for i in it:
+        yield separator
+        yield i
+
 def main():
 
     args = PARSER.parse_args()
@@ -122,14 +133,10 @@ def main():
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
     # transform the list into a list of interger strings using the
-    # format given. The reduce concatenates all the strings in the
-    # list together with the separator in between.
-    try:
-        print(reduce(lambda x, y: x + separator + y,
-            map(lambda a: format_str.format(a),
-                frange(args.first, args.last + 1, args.increment))))
-    except TypeError:
-        pass
+    # format given. separate place the separate between each element.
+    for i in separate(separator, map(lambda a: format_str.format(a),
+            frange(args.first, args.last + 1, args.increment))):
+        print(i, end='')
 
 if __name__ == '__main__':
 
