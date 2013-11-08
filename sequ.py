@@ -87,14 +87,7 @@ def romanType(number):
     except:
         raise argparse.ArgumentTypeError('Must be a valid roman number')
 
-def unescape_control_codes(string):
-    """ Control codes are automatically escaped when 
-    passed through the command line. The following 
-    removes the escaping.
-    """
-    return codecs.getdecoder('unicode_escape')(string)[0]
-
-def floatIntType(value):
+def float_int_type(value):
     """ Function which is used as a type for argparse.
     If the argument is not a valid float or int an
     error is thrown. The type returned will be int if
@@ -108,7 +101,7 @@ def floatIntType(value):
         return value_type(value)
     except ValueError:
         raise argparse.ArgumentTypeError('must be a valid float or int')
-    
+
 PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
@@ -166,17 +159,17 @@ GROUP2.add_argument(
 PARSER.add_argument(
     'first', metavar='FIRST',
     help='The first number',
-    type=floatIntType, default=1, nargs='?')
+    type=float_int_type, default=1, nargs='?')
 
 PARSER.add_argument(
     'increment', metavar='INCREMENT',
     help='The step size',
-    type=floatIntType, default=1, nargs='?')
+    type=float_int_type, default=1, nargs='?')
 
 PARSER.add_argument(
     'last', metavar='LAST',
     help='The last number',
-    type=floatIntType)
+    type=float_int_type)
 
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
@@ -188,7 +181,7 @@ def frange(start, stop, step=1):
 def separate(separator, iterable):
     """ seperate generates a iterable with the
     separator element between every element of the
-    given iterable """ 
+    given iterable. """
     it = iter(iterable)
     value = next(it)
     yield value
@@ -196,23 +189,29 @@ def separate(separator, iterable):
         yield separator
         yield i
 
+def unescape_control_codes(string):
+    """ Control codes are automatically escaped when passed
+    through the command line. The following removes the
+    escaping. """
+    return codecs.getdecoder('unicode_escape')(string)[0]
+
 def main():
 
     args = PARSER.parse_args()
     
-    # Determine the length of the largest fractional part of the 
+    # Determine the length of the largest fractional part of the
     # three positional arguments. From bottom to top, right to left
     # this statement does the following. First the number is turned
     # into a string then split into its integer and fractional parts,
-    # next if the number had a fractional part the len of it is 
+    # next if the number had a fractional part the len of it is
     # taken, finally the largest length is return.
     fractional_length = max(
         map(lambda parts: len(parts[1]) if len(parts) == 2 else 0,
             map(lambda number: str(number).split('.'), 
                 [args.first, args.last, args.increment])))
-    
+
     # The length of the largest number.
-    max_length = len(str(int(args.last))) + fractional_length 
+    max_length = len(str(int(args.last))) + fractional_length
     max_length += 1 if fractional_length else 0 # for the '.'
 
     # Depending on the options used the format will be constructed
@@ -240,7 +239,7 @@ def main():
     for i in separate(separator, map(lambda a: format_str.format(a),
             frange(args.first, args.last + 1, args.increment))):
         print(i, end='')
-    
+
     print()
 
 if __name__ == '__main__':
