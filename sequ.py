@@ -16,49 +16,7 @@ FORMAT_WORDS = ['arabic', 'ARABIC',
                'roman',  'ROMAN',
                'floating', 'FLOATING']
 
-def sequRange(formatWord, first, last, increment):
-    """ Function for sequ to generate a range based on the
-    formatWord.
-    """
-
-    if formatWord in ['roman', 'ROMAN']:
-        mapping = map(lambda x: str(Roman(x)),
-                range(Roman(first).toNumber(), 
-                      Roman(last).toNumber() + 1, 
-                      Roman(increment).toNumber()))
-        if formatWord.isupper():
-            mapping = map(lambda x: x.upper(), mapping)
-
-    elif formatWord in ['arabic', 'ARABIC']:
-        mapping = range(first, last + 1, increment)
-
-    elif formatWord in ['floating', 'FLOATING']:
-        mapping = frange(first, last + 1.0, increment)
-
-    elif formatWord in ['alpha', 'ALPHA']:
-        if isinstance(first, str):
-            first = ord(first)
-        if isinstance(last, str):
-            last = ord(last)
-        if isinstance(increment, str):
-            increment = ord(increment)
-        mapping = map(lambda x: chr(x), range(first, last + 1, increment)) 
-        if formatWord.isupper():
-            mapping = map(lambda x: x.upper(), mapping)
-
-    return mapping
-
-def frange(start, stop, step=1.0):
-    """ Floating point range function """
-
-    if start >= stop:
-        yield start
-
-    while start < stop:
-        yield start
-        start += step
-
-def charType(string):
+def char_type(string):
     """ Function which is used as a type for argparse.
     If the string does not contain only one character
     then an error is thrown.
@@ -68,7 +26,7 @@ def charType(string):
         return string
     raise argparse.ArgumentTypeError('must be a single character')
 
-def formatWordType(word):
+def format_word_type(word):
     """ Function which is used as a type for argparse.
     If the string is not in list then an error is thrown.
     """
@@ -77,7 +35,7 @@ def formatWordType(word):
     else:
         raise argparse.ArgumentTypeError('Must be a format Word')
 
-def romanType(number):
+def roman_type(number):
     """ Function which is used as a type for argparse.
     If the argument is not a type of Roman number then
     an error is thrown.
@@ -113,7 +71,7 @@ PARSER.add_argument(
    '-F', '--format-word',
    dest='formatWord',
    default='arabic',
-   type=formatWordType)
+   type=format_word_type)
 
 GROUP1 = PARSER.add_mutually_exclusive_group()
 
@@ -142,7 +100,7 @@ GROUP2.add_argument(
     '-p', '--pad', metavar='CHAR',
     help='equalize width by padding with the padding provided',
     dest='padding',
-    type=charType)
+    type=char_type)
 
 GROUP2.add_argument(
     '-P', '--pad-spaces',
