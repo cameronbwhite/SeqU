@@ -103,6 +103,12 @@ class TestSeqU(unittest.TestCase):
         status, text = subprocess.getstatusoutput('./sequ.py -s \':\' 1 10')
         self.assertEqual(status, 0)
         self.assertEqual(text, '1:2:3:4:5:6:7:8:9:10')
+
+    def test_seperator_spaces_1(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -s \' \' 3')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '1 2 3')
         
     def test_equalwidth_1(self):
         status, text = subprocess.getstatusoutput(
@@ -115,3 +121,21 @@ class TestSeqU(unittest.TestCase):
                 './sequ.py -w 1 20.1 100')
         self.assertEqual(status, 0)
         self.assertEqual(text, '001.0\n021.1\n041.2\n061.3\n081.4')
+    
+    def test_words_1(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -W 3')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '1 2 3')
+    
+    def test_pad_spaces_1(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -P 0 500 1000')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, '   0\n 500\n1000')
+
+    def test_pad_letter_1(self):
+        status, text = subprocess.getstatusoutput(
+                './sequ.py -p a 0 500 1000')
+        self.assertEqual(status, 0)
+        self.assertEqual(text, 'aaa0\na500\n1000')
