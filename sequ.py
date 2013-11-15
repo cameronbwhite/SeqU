@@ -24,7 +24,8 @@ def floatIntType(value):
         return value_type(value)
     except ValueError:
         raise argparse.ArgumentTypeError('must be a valid float or int')
-    
+
+
 PARSER = argparse.ArgumentParser(
     description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
@@ -87,7 +88,7 @@ def separate(separator, iterable):
         yield i
 
 def main():
-
+    
     args = PARSER.parse_args()
     
     # Determine the length of the largest fractional part of the 
@@ -134,6 +135,10 @@ def main():
     print()
 
 if __name__ == '__main__':
-
-    main()
-    sys.exit()
+    
+    try:
+        main()
+    except SystemExit:
+        sys.exit(1)
+    else:
+        sys.exit(0)
