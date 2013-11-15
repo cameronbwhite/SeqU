@@ -43,6 +43,17 @@ class Roman(object):
     def __repr__(self):
 
         return repr(self._roman)
+    
+    def __format__(self, format_spec):
+    
+        type_char = format_spec[-1]
+        if type_char not in ['r', 'R']:
+            raise ValueError(
+                "Unknown format code '{}' for object in type {}".format(
+                    type_char, type(self)))
+    
+        func = str.upper if str.isupper(type_char) else str.lower
+        return format(func(str(self)), format_spec[:-1])
 
     def toNumber(self):
         """ Return the integer representation of the number """
