@@ -49,7 +49,7 @@ class Roman(object):
 
     def __repr__(self):
 
-        return repr(self._roman)
+        return "Roman('{}')".format(str(self))
     
     def __format__(self, format_spec):
     
