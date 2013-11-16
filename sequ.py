@@ -154,7 +154,7 @@ def unescape_control_codes(string):
     return codecs.getdecoder('unicode_escape')(string)[0]
 
 def main():
-
+    
     args = PARSER.parse_args()
     
     # Determine the length of the largest fractional part of the
@@ -201,6 +201,10 @@ def main():
     print()
 
 if __name__ == '__main__':
-
-    main()
-    sys.exit()
+    
+    try:
+        main()
+    except SystemExit:
+        sys.exit(1)
+    else:
+        sys.exit(0)
