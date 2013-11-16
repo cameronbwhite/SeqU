@@ -23,7 +23,8 @@ class Roman(object):
         a string with a valid roman number. It can also act as
         a copy constructor if number is a another Roman.
         """
-        if isinstance(number, int): 
+        if isinstance(number, (int, float)): 
+            number = int(number)
             if number <= 0:
                 raise ValueError('number must be greater than 0')
             self._roman = ''
@@ -32,9 +33,11 @@ class Roman(object):
                 number %= i
         elif isinstance(number, str):
             self._roman = number.lower()
-            self.toNumber()
+            int(self)
         elif isinstance(number, Roman):
             self._roman = number._roman
+        else:
+            raise ValueError('unknown type roman number')
 
     def __str__(self):
 
