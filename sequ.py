@@ -9,7 +9,20 @@
 import argparse
 import codecs
 from roman import Roman
+from alpha import Alpha
 import sys
+
+FORMAT_WORDS_TO_CHAR = {
+    'arabic' : 'f', 'ARABIC' : 'f',
+    'float'  : 'f', 'FLOAT'  : 'f',
+    'roman'  : 'r', 'ROMAN'  : 'R',
+    'alpha'  : 'a', 'ALPHA'  : 'A'}
+
+TYPE_AND_FORMAT_WORD = {
+    Roman : 'roman',  'roman'  : Roman,
+    Alpha : 'alpha',  'alpha'  : Alpha,
+    int   : 'arabic', 'arabic' : int,
+    float : 'float',  'float'  : float}
 
 def char_type(string):
     """ Function which is used as a type for argparse.
@@ -21,23 +34,13 @@ def char_type(string):
         return string
     raise argparse.ArgumentTypeError('must be a single character')
 
-def roman_type(number):
-    """ Function which is used as a type for argparse.
-    If the argument is not a type of Roman number then
-    an error is thrown.
-    """
-    try:
-        return Roman(number)
-    except:
-        raise argparse.ArgumentTypeError('Must be a valid roman number')
-
 def float_int_type(value):
     """ Function which is used as a type for argparse.
     If the argument is not a valid float or int an
     error is thrown. The type returned will be int if
     no fractional component is found otherwise the type
     will be a float."""
-    if '.' in value:
+    if '.' in str(value):
         value_type = float
     else:
         value_type = int
@@ -46,77 +49,105 @@ def float_int_type(value):
     except ValueError:
         raise argparse.ArgumentTypeError('must be a valid float or int')
 
-PARSER = argparse.ArgumentParser(
-    description='Print numbers from FIRST to LAST, in steps of INCREMENT')
+def any_type(value):
+    """ Function which is used as a type for argpase. """
 
-PARSER.add_argument(
-    '--version',
-    action='version', version='2.0')
+    try:
+        return float_int_type(value)
+    except argparse.ArgumentTypeError:
+        pass
 
-PARSER.add_argument(
-   '-F', '--format-word',
-   dest='formatWord',
-   default='arabic',
-   choices = ['arabic', 'ARABIC',
-              'alpha',  'ALPHA',
-              'roman',  'ROMAN',
-              'floating', 'FLOATING'])
+    try:
+        return Alpha(value)
+    except ValueError:
+        pass
 
-GROUP1 = PARSER.add_mutually_exclusive_group()
+    try:
+        return Roman(value)
+    except ValueError:
+        pass
 
-GROUP1.add_argument(
-    '-s', '--separator', metavar='STRING',
-    help='use the STRING to separate numbers',
-    dest='separator',
-    default='\n',
-    type=str)
+    raise argparse.ArgumentTypeError(
+            'Must be a valid int, float, Alpha, or Roman')
 
-GROUP1.add_argument(
-    '-W', '--words',
-    help='Output the sequence as a single space-separeted line of words',
-    dest='separator',
-    const=' ', action='store_const')
+def parse():
+    parser = argparse.ArgumentParser(
+        description='Print numbers from FIRST to LAST, in steps of INCREMENT')
 
-GROUP2 = PARSER.add_mutually_exclusive_group()
+    parser.add_argument(
+        '--version',
+        action='version', version='2.0')
 
-GROUP2.add_argument(
-    '-f', '--format', metavar='FORMAT',
-    help='use python format style floating-point FORMAT',
-    dest='format_str',
-    type=str)
+    parser.add_argument(
+       '-F', '--format-word',
+       dest='format_word',
+       choices = FORMAT_WORDS_TO_CHAR.keys())
 
-GROUP2.add_argument(
-    '-p', '--pad', metavar='CHAR',
-    help='equalize width by padding with the padding provided',
-    dest='padding',
-    type=char_type)
+    group1 = parser.add_mutually_exclusive_group()
 
-GROUP2.add_argument(
-    '-P', '--pad-spaces',
-    help='equalize width by padding with leading spaces',
-    dest='padding',
-    const=' ', action='store_const')
+    group1.add_argument(
+        '-s', '--separator', metavar='STRING',
+        help='use the STRING to separate numbers',
+        dest='separator',
+        default='\n',
+        type=str)
 
-GROUP2.add_argument(
-    '-w', '--equal-width',
-    help='equalize width by padding with leading zeroes',
-    dest='padding',
-    const='0', action='store_const')
+    group1.add_argument(
+        '-W', '--words',
+        help='Output the sequence as a single space-separeted line of words',
+        dest='separator',
+        const=' ', action='store_const')
 
-PARSER.add_argument(
-    'first', metavar='FIRST',
-    help='The first number',
-    type=float_int_type, default=1, nargs='?')
+    group2 = parser.add_mutually_exclusive_group()
 
-PARSER.add_argument(
-    'increment', metavar='INCREMENT',
-    help='The step size',
-    type=float_int_type, default=1, nargs='?')
+    group2.add_argument(
+        '-f', '--format', metavar='FORMAT',
+        help='use python format style floating-point FORMAT',
+        dest='format_str',
+        type=str)
 
-PARSER.add_argument(
-    'last', metavar='LAST',
-    help='The last number',
-    type=float_int_type)
+    group2.add_argument(
+        '-p', '--pad', metavar='CHAR',
+        help='equalize width by padding with the padding provided',
+        dest='padding',
+        type=char_type)
+
+    group2.add_argument(
+        '-P', '--pad-spaces',
+        help='equalize width by padding with leading spaces',
+        dest='padding',
+        const=' ', action='store_const')
+
+    group2.add_argument(
+        '-w', '--equal-width',
+        help='equalize width by padding with leading zeroes',
+        dest='padding',
+        const='0', action='store_const')
+    
+    args = parser.parse_known_args()[0]
+    
+    try:
+        argument_type = TYPE_AND_FORMAT_WORD[
+                str(args.format_word).lower()]
+    except KeyError:
+        argument_type = any_type
+    
+    parser.add_argument(
+        'first', metavar='FIRST',
+        help='The first number',
+        type=argument_type, default=argument_type(1), nargs='?')
+
+    parser.add_argument(
+        'increment', metavar='INCREMENT',
+        help='The step size',
+        type=argument_type, default=argument_type(1), nargs='?')
+
+    parser.add_argument(
+        'last', metavar='LAST',
+        help='The last number',
+        type=argument_type)
+
+    return parser.parse_args()
 
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
@@ -144,7 +175,7 @@ def unescape_control_codes(string):
 
 def main():
     
-    args = PARSER.parse_args()
+    args = parse()
     
     # Determine the length of the largest fractional part of the
     # three positional arguments. From bottom to top, right to left
@@ -160,6 +191,16 @@ def main():
     # The length of the largest number.
     max_length = len(str(int(args.last))) + fractional_length
     max_length += 1 if fractional_length else 0 # for the '.'
+    
+    try:
+        format_character = FORMAT_WORDS_TO_CHAR[args.format_word]
+    except KeyError:
+        word = TYPE_AND_FORMAT_WORD[type(args.last)]
+        word = word.lower() if str(args.last).islower() else word.upper()
+        format_character = FORMAT_WORDS_TO_CHAR[word]
+
+    format_type = type(args.last)
+    format_type = float if format_type is int else format_type
 
     # Depending on the options used the format will be constructed
     # differently.
@@ -171,20 +212,33 @@ def main():
         # If a padding was provided then apply it by constructing
         # the format with the supplied padding character and the
         # length of the largest number.
-        format_str = '{{:{}>{}.{}f}}'.format(
-                args.padding, max_length, fractional_length)
+        if format_character == 'f':
+            format_str = '{{:{}>{}.{}{}}}'.format(
+                    args.padding, max_length, fractional_length,
+                    format_character)
+        else:
+            format_str = '{{:{}>{}{}}}'.format(
+                    args.padding, max_length, format_character)
+
     else:
         # Else the default format will be used.
-        format_str = '{{:.{}f}}'.format(fractional_length)
+        if format_character == 'f':
+            format_str = '{{:.{}{}}}'.format(
+                    fractional_length, format_character)
+        else:
+            format_str = '{{:{}}}'.format(format_character)
 
     separator = unescape_control_codes(args.separator)
-
+    
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
     # transforms the list into a list of interger strings using the
     # format given. separate places the separator between each element.
-    for i in separate(separator, map(lambda a: format_str.format(a),
-            frange(args.first, args.last + 1, args.increment))):
+    for i in separate(separator, 
+             map(lambda a: format_str.format(a),
+             map(lambda b: format_type(b),
+             frange(float(args.first), (float(args.last)+1),
+                 float(args.increment))))):
         print(i, end='')
 
     print()
