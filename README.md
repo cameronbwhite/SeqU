@@ -4,29 +4,29 @@ Extended implemenation of the Unix seq command
 
 ## usage ##
 
-usage: sequ.py [-h] [--version] [-s STRING | -W]
-               [-f FORMAT | -p CHAR | -P | -w]
-               [FIRST] [INCREMENT] LAST
+usage: sequ.py [-h] [--version] [-s STRING | -W]  
+               [-f FORMAT | -p CHAR | -P | -w]  
+               [FIRST] [INCREMENT] LAST  
 
-Print numbers from FIRST to LAST, in steps of INCREMENT
+Print numbers from FIRST to LAST, in steps of INCREMENT  
 
-positional arguments:
-  FIRST                 The first number
-  INCREMENT             The step size
-  LAST                  The last number
+positional arguments:  
+  FIRST                 The first number  
+  INCREMENT             The step size  
+  LAST                  The last number  
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --version             show program's version number and exit
-  -s STRING, --separator STRING
-                        use the STRING to separate numbers
-  -W, --words           Output the sequence as a single space-separeted line
-                        of words
-  -f FORMAT, --format FORMAT
-                        use python format style floating-point FORMAT
-  -p CHAR, --pad CHAR   equalize width by padding with the padding provided
-  -P, --pad-spaces      equalize width by padding with leading spaces
-  -w, --equal-width     equalize width by padding with leading zeroes
+optional arguments:  
+  -h, --help            show this help message and exit  
+  --version             show program's version number and exit  
+  -s STRING, --separator STRING  
+                        use the STRING to separate numbers  
+  -W, --words           Output the sequence as a single space-separeted line  
+                        of words  
+  -f FORMAT, --format FORMAT  
+                        use python format style floating-point FORMAT  
+  -p CHAR, --pad CHAR   equalize width by padding with the padding provided  
+  -P, --pad-spaces      equalize width by padding with leading spaces  
+  -w, --equal-width     equalize width by padding with leading zeroes  
 
 ## examples ##
 
