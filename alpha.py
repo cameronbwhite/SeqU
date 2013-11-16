@@ -16,7 +16,7 @@ class Alpha:
             if len(value) is not 1:
                 raise ValueError("one character only")
         else:
-            value = chr(value%26+ord('a'))
+            value = chr(int(value)%26+ord('a'))
 
         if value.isalpha():
             self._value = value.lower()
@@ -24,7 +24,7 @@ class Alpha:
             raise ValueError("must a letter in the alphabet")
 
     def __str__(self):
-        str(self._value)
+        return str(self._value)
 
     def __repr__(self):
         return "Alpha('{}')".format(self._value)
