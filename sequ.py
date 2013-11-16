@@ -11,11 +11,6 @@ import codecs
 from roman import Roman
 import sys
 
-FORMAT_WORDS = ['arabic', 'ARABIC',
-               'alpha',  'ALPHA',
-               'roman',  'ROMAN',
-               'floating', 'FLOATING']
-
 def char_type(string):
     """ Function which is used as a type for argparse.
     If the string does not contain only one character
@@ -25,15 +20,6 @@ def char_type(string):
     if len(string) == 1:
         return string
     raise argparse.ArgumentTypeError('must be a single character')
-
-def format_word_type(word):
-    """ Function which is used as a type for argparse.
-    If the string is not in list then an error is thrown.
-    """
-    if word in FORMAT_WORDS:
-        return word
-    else:
-        raise argparse.ArgumentTypeError('Must be a format Word')
 
 def roman_type(number):
     """ Function which is used as a type for argparse.
@@ -71,7 +57,10 @@ PARSER.add_argument(
    '-F', '--format-word',
    dest='formatWord',
    default='arabic',
-   type=format_word_type)
+   choices = ['arabic', 'ARABIC',
+              'alpha',  'ALPHA',
+              'roman',  'ROMAN',
+              'floating', 'FLOATING'])
 
 GROUP1 = PARSER.add_mutually_exclusive_group()
 
