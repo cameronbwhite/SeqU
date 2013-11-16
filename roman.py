@@ -57,14 +57,9 @@ class Roman(object):
     
     def __float__(self):
 
-        return float(self.toNumber())
+        return float(int(self))
 
     def __int__(self):
-
-        return int(self.toNumber())
-
-    def toNumber(self):
-        """ Return the integer representation of the number """
 
         number = 0
         roman = self._roman
@@ -76,5 +71,3 @@ class Roman(object):
         if roman:
             raise SyntaxError('Invalid Roman number')
         return number
-
-
