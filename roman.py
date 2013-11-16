@@ -31,7 +31,7 @@ class Roman(object):
                 self._roman += NUMBER_TO_ROMAN[i] * (number // i)
                 number %= i
         elif isinstance(number, str):
-            self._roman = number.tolower()
+            self._roman = number.lower()
             self.toNumber()
         elif isinstance(number, Roman):
             self._roman = number._roman
@@ -54,6 +54,14 @@ class Roman(object):
     
         func = str.upper if str.isupper(type_char) else str.lower
         return format(func(str(self)), format_spec[:-1])
+    
+    def __float__(self):
+
+        return float(self.toNumber())
+
+    def __int__(self):
+
+        return int(self.toNumber())
 
     def toNumber(self):
         """ Return the integer representation of the number """
