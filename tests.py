@@ -114,3 +114,13 @@ class TestSeqU(unittest.TestCase):
         text = subprocess.getoutput(
                 './sequ.py -p a 0 500 1000')
         self.assertEqual(text, 'aaa0\na500\n1000')
+
+    def test_seperator_newline_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -s "\n" 0 500 1000')
+        self.assertEqual(text, '0\n500\n1000')
+
+    def test_seperator_tab_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -s "\t" 0 500 1000')
+        self.assertEqual(text, '0\t500\t1000')
