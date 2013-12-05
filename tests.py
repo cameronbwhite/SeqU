@@ -154,3 +154,19 @@ class TestSeqU(unittest.TestCase):
         text = subprocess.getoutput(
                 './sequ.py -F ROMAN i vi')
         self.assertEqual(text, 'I\nII\nIII\nIV\nV\nVI')
+
+    def test_promotion_1(self):
+        text = subprocess.getoutput('./sequ.py f')
+        self.assertEqual(text, 'a\nb\nc\nd\ne\nf')
+
+    def test_promotion_2(self):
+        text = subprocess.getoutput('./sequ.py F')
+        self.assertEqual(text, 'A\nB\nC\nD\nE\nF')
+
+    def test_promotion_3(self):
+        text = subprocess.getoutput('./sequ.py iv')
+        self.assertEqual(text, 'i\nii\niii\niv')
+
+    def test_promotion_4(self):
+        text = subprocess.getoutput('./sequ.py IV')
+        self.assertEqual(text, 'I\nII\nIII\nIV')

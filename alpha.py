@@ -16,10 +16,10 @@ class Alpha:
             if len(value) is not 1:
                 raise ValueError("one character only")
         else:
-            value = chr(int(value)%26+ord('a'))
+            value = chr(int(value)%26+ord('a')-1)
 
         if value.isalpha():
-            self._value = value.lower()
+            self._value = value
         else:
             raise ValueError("must a letter in the alphabet")
 
@@ -44,4 +44,6 @@ class Alpha:
         return format(func(str(self)), format_spec[:-1])
 
     def __int__(self):
-        return ord(self._value) - ord('a')
+        base = ord('a') if self._value.islower() else ord('A') 
+        return ord(self._value) - base + 1
+

@@ -28,7 +28,7 @@ class Roman(object):
             return
 
         try:
-            self._roman = number.lower()
+            self._roman = number
             _ = int(self)
             return
         except AttributeError:
@@ -69,7 +69,7 @@ class Roman(object):
     def __int__(self):
 
         number = 0
-        roman = self._roman
+        roman = self._roman.lower()
         for i in reversed(sorted(NUMBER_TO_ROMAN,
                 key=lambda a: len(NUMBER_TO_ROMAN[a]))):
             while NUMBER_TO_ROMAN[i] in roman:

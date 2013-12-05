@@ -13,7 +13,7 @@ from roman import Roman
 from alpha import Alpha
 import sys
 
-FORMAT_WORDS_TO_CHAR = {
+FORMAT_WORD_AND_CHAR = {
     'arabic' : 'f', 'ARABIC' : 'f',
     'float'  : 'f', 'FLOAT'  : 'f',
     'roman'  : 'r', 'ROMAN'  : 'R',
@@ -82,7 +82,7 @@ def parse():
     parser.add_argument(
        '-F', '--format-word',
        dest='format_word',
-       choices = FORMAT_WORDS_TO_CHAR.keys())
+       choices = FORMAT_WORD_AND_CHAR.keys())
 
     group1 = parser.add_mutually_exclusive_group()
 
@@ -194,11 +194,11 @@ def main():
     max_length += 1 if fractional_length else 0 # for the '.'
     
     try:
-        format_character = FORMAT_WORDS_TO_CHAR[args.format_word]
+        format_character = FORMAT_WORD_AND_CHAR[args.format_word]
     except KeyError:
         word = TYPE_AND_FORMAT_WORD[type(args.last)]
         word = word.lower() if str(args.last).islower() else word.upper()
-        format_character = FORMAT_WORDS_TO_CHAR[word]
+        format_character = FORMAT_WORD_AND_CHAR[word]
 
     format_type = type(args.last)
     format_type = float if format_type is int else format_type
