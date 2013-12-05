@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright © 2013 Cameron Brandon White
 # -*- coding: utf-8 -*-
 
