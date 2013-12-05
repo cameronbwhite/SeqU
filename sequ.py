@@ -158,27 +158,14 @@ def frange(start, stop, step=1):
         start += step
 
 def longest_roman(n):
-    lengths = {
-           1 : 1,    
-           2 : 2,    
-           3 : 3,    
-           8 : 4,   
-          18 : 5,   
-          28 : 6, 
-          38 : 7,   
-          88 : 8,  
-         188 : 9, 
-         288 : 10, 
-         388 : 11, 
-         488 : 12, 
-         988 : 13}
+    lengths = [1, 2, 3, 8, 18, 28, 38, 88, 188, 288, 388, 488, 988]
     n = int(Roman(n))
-    last = 0
-    for i in sorted(lengths):
-        if n%1000 <= i:
-            last = i
+    i = 0
+    for v in sorted(lengths):
+        if n%1000 <= v:
             break
-    return lengths[last] + (n // 1000)
+        i += 1
+    return (i + 1) + (n // 1000)
 
 def separate(separator, iterable):
     """ seperate generates a iterable with the
