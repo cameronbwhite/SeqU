@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # Copyright © 2013 Cameron Brandon White
 # This specification describes the "universal sequence" command sequ. 
 # The sequ command is a backward-compatible set of extensions to the 
