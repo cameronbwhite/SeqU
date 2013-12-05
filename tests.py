@@ -124,3 +124,33 @@ class TestSeqU(unittest.TestCase):
         text = subprocess.getoutput(
                 './sequ.py -s "\t" 0 500 1000')
         self.assertEqual(text, '0\t500\t1000')
+    
+    def test_format_word_arabic_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F arabic 0 2 10')
+        self.assertEqual(text, '0\n2\n4\n6\n8\n10')
+
+    def test_format_word_ARABIC_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F ARABIC 0 2 10')
+        self.assertEqual(text, '0\n2\n4\n6\n8\n10')
+
+    def test_format_word_alpha_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F alpha a f')
+        self.assertEqual(text, 'a\nb\nc\nd\ne\nf')
+
+    def test_format_word_ALPHA_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F ALPHA a f')
+        self.assertEqual(text, 'A\nB\nC\nD\nE\nF')
+
+    def test_format_word_roman_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F roman i vi')
+        self.assertEqual(text, 'i\nii\niii\niv\nv\nvi')
+
+    def test_format_word_roman_1(self):
+        text = subprocess.getoutput(
+                './sequ.py -F ROMAN i vi')
+        self.assertEqual(text, 'I\nII\nIII\nIV\nV\nVI')
