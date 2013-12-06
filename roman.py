@@ -76,5 +76,9 @@ class Roman(object):
                 number += i
                 roman = roman.replace(NUMBER_TO_ROMAN[i], '', 1)
         if roman:
-            raise SyntaxError('Invalid Roman number')
+            raise ValueError('Invalid Roman number')
         return number
+
+    def __len__(self):
+
+        return len(str(self))

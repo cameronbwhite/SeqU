@@ -198,46 +198,41 @@ def main():
         map(lambda parts: len(parts[1]) if len(parts) == 2 else 0,
             map(lambda number: str(number).split('.'), 
                 [args.first, args.last, args.increment])))
-
-    # The length of the largest number.
-    max_length = len(str(int(args.last))) + fractional_length
-    max_length += 1 if fractional_length else 0 # for the '.'
     
+    # Determine the format type
+    format_type = type(args.last)
+    format_type = float if format_type is int else format_type
+   
+    # Determine the format character
     try:
         format_character = FORMAT_WORD_AND_CHAR[args.format_word]
     except KeyError:
-        word = TYPE_AND_FORMAT_WORD[type(args.last)]
+        word = TYPE_AND_FORMAT_WORD[format_type]
         word = word.lower() if str(args.last).islower() else word.upper()
         format_character = FORMAT_WORD_AND_CHAR[word]
 
-    format_type = type(args.last)
-    format_type = float if format_type is int else format_type
-
+    # Determine length of the largest number.
+    if format_character in ['f']:
+        max_length = len(str(int(args.last))) + fractional_length
+        max_length += 1 if fractional_length else 0 # for the '.'
+    elif format_character in ['r', 'R']:
+        max_length = longest_roman(args.last)
+    elif format_character in ['a', 'A']:
+        max_length = 1
+    
     # Depending on the options used the format will be constructed
     # differently.
     if args.format_str:
         # If the format option was used then the format given will
         # be passed directly.
         format_str = '{{{}}}'.format(args.format_str)
-    elif args.padding:
-        # If a padding was provided then apply it by constructing
-        # the format with the supplied padding character and the
-        # length of the largest number.
-        if format_character == 'f':
-            format_str = '{{:{}>{}.{}{}}}'.format(
-                    args.padding, max_length, fractional_length,
-                    format_character)
-        else:
-            format_str = '{{:{}>{}{}}}'.format(
-                    args.padding, max_length, format_character)
-
     else:
-        # Else the default format will be used.
-        if format_character == 'f':
-            format_str = '{{:.{}{}}}'.format(
-                    fractional_length, format_character)
-        else:
-            format_str = '{{:{}}}'.format(format_character)
+        # Else construct the format by the options given
+        format_str = '{{:{}{}{}{}}}'.format(
+            '{}>{}'.format(args.padding, max_length) if args.padding else '',
+            '.' if format_character == 'f' else '',
+            fractional_length if format_character == 'f' else '',
+            format_character)
 
     separator = unescape_control_codes(args.separator)
     
@@ -245,11 +240,11 @@ def main():
     # range specified by first, last, and increment. The map
     # transforms the list into a list of interger strings using the
     # format given. separate places the separator between each element.
-    for i in separate(separator, 
-             map(lambda a: format_str.format(a),
-             map(lambda b: format_type(b),
+    for i in separate(separator,    # Apply separator
+             map(format_str.format, # Apply format
+             map(format_type,       # Apply type
              frange(float(args.first), (float(args.last)+1),
-                 float(args.increment))))):
+                    float(args.increment))))):
         print(i, end='')
 
     print()
