@@ -158,6 +158,7 @@ def frange(start, stop, step=1):
         start += step
 
 def longest_roman(n):
+    """ Return the length of the longest roman number given a number """
     lengths = [1, 2, 3, 8, 18, 28, 38, 88, 188, 288, 388, 488, 988]
     n = int(Roman(n))
     i = 0
