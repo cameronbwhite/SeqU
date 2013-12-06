@@ -47,4 +47,7 @@ class Alpha:
     def __int__(self):
         base = ord('a') if self._value.islower() else ord('A') 
         return ord(self._value) - base + 1
+    
+    def __add__(self, other):
 
+        return Alpha(int(self)+int(other))

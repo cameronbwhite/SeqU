@@ -11,6 +11,7 @@ import argparse
 import codecs
 from roman import Roman
 from alpha import Alpha
+from itertools import count
 import sys
 
 FORMAT_WORD_AND_CHAR = {
@@ -24,6 +25,11 @@ TYPE_AND_FORMAT_WORD = {
     Alpha : 'alpha',  'alpha'  : Alpha,
     int   : 'arabic', 'arabic' : int,
     float : 'float',  'float'  : float}
+
+class NumberLines(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        namespace.__setattr__(self.dest, values)
+        namespace.last = 1
 
 def char_type(string):
     """ Function which is used as a type for argparse.
@@ -80,17 +86,27 @@ def parse():
         action='version', version='2.0')
 
     parser.add_argument(
-       '-F', '--format-word',
-       dest='format_word',
-       choices = FORMAT_WORD_AND_CHAR.keys())
+        '-F', '--format-word',
+        dest='format_word',
+        choices = FORMAT_WORD_AND_CHAR.keys())
+
+    parser.add_argument(
+        '-n', '--number-lines',
+        dest='file',
+        action=NumberLines,
+        const=sys.stdin,
+        nargs='?',
+        type=argparse.FileType('r+'))
 
     group1 = parser.add_mutually_exclusive_group()
+
+    args = parser.parse_known_args()[0]
 
     group1.add_argument(
         '-s', '--separator', metavar='STRING',
         help='use the STRING to separate numbers',
         dest='separator',
-        default='\n',
+        default=' ' if args.file else '\n',
         type=str)
 
     group1.add_argument(
@@ -142,11 +158,12 @@ def parse():
         'increment', metavar='INCREMENT',
         help='The step size',
         type=argument_type, default=argument_type(1), nargs='?')
-
-    parser.add_argument(
-        'last', metavar='LAST',
-        help='The last number',
-        type=argument_type)
+    
+    if not args.file:
+        parser.add_argument(
+            'last', metavar='LAST',
+            help='The last number',
+            type=argument_type)
 
     return parser.parse_args()
 
@@ -201,8 +218,11 @@ def main():
                 [args.first, args.last, args.increment])))
     
     # Determine the format type
-    format_type = type(args.last)
-    format_type = float if format_type is int else format_type
+    try:
+        format_type = TYPE_AND_FORMAT_WORD[args.format_word.lower()]
+    except (KeyError, AttributeError):
+        format_type = type(args.last)
+        format_type = float if format_type is int else format_type
    
     # Determine the format character
     try:
@@ -241,14 +261,19 @@ def main():
     # range specified by first, last, and increment. The map
     # transforms the list into a list of interger strings using the
     # format given. separate places the separator between each element.
-    for i in separate(separator,    # Apply separator
-             map(format_str.format, # Apply format
-             map(format_type,       # Apply type
-             frange(float(args.first), (float(args.last)+1),
-                    float(args.increment))))):
-        print(i, end='')
-
-    print()
+    sequence = map(format_str.format,  # Apply format
+               map(format_type,        # Apply type
+               count(args.first, args.increment) if args.file else 
+               frange(float(args.first), (float(args.last)+1),
+                      float(args.increment))))
+    
+    if args.file: 
+        for i, line in zip(sequence, args.file):
+            print('{}{}{}'.format(i, separator, line), end='')
+    else:
+        for i in separate(separator, sequence):
+            print(i, end='')
+        print()
 
 if __name__ == '__main__':
     

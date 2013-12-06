@@ -52,7 +52,7 @@ class Roman(object):
         return "Roman('{}')".format(str(self))
     
     def __format__(self, format_spec):
-    
+        
         type_char = format_spec[-1]
         if type_char not in ['r', 'R']:
             raise ValueError(
@@ -82,3 +82,7 @@ class Roman(object):
     def __len__(self):
 
         return len(str(self))
+
+    def __add__(self, other):
+
+        return Roman(int(self) + int(other))
