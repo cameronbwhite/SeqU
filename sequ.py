@@ -90,7 +90,33 @@ def parse():
         dest='format_word',
         choices = FORMAT_WORD_AND_CHAR.keys())
 
-    parser.add_argument(
+    group1 = parser.add_mutually_exclusive_group()
+    
+    group1.add_argument(
+        '-p', '--pad', metavar='CHAR',
+        help='equalize width by padding with the padding provided',
+        dest='padding',
+        type=char_type)
+
+    group1.add_argument(
+        '-P', '--pad-spaces',
+        help='equalize width by padding with leading spaces',
+        dest='padding',
+        const=' ', action='store_const')
+
+    group1.add_argument(
+        '-w', '--equal-width',
+        help='equalize width by padding with leading zeroes',
+        dest='padding',
+        const='0', action='store_const')
+
+    group1.add_argument(
+        '-f', '--format', metavar='FORMAT',
+        help='use python format style floating-point FORMAT',
+        dest='format_str',
+        type=str)
+
+    group1.add_argument(
         '-n', '--number-lines',
         dest='file',
         action=NumberLines,
@@ -98,48 +124,26 @@ def parse():
         nargs='?',
         type=argparse.FileType('r+'))
 
-    group1 = parser.add_mutually_exclusive_group()
+    group2 = parser.add_mutually_exclusive_group()
+    
+    try: 
+        args = parser.parse_known_args()[0]
+        default=' ' if args.file else '\n'
+    except IndexError:
+        default='\n'
 
-    args = parser.parse_known_args()[0]
-
-    group1.add_argument(
+    group2.add_argument(
         '-s', '--separator', metavar='STRING',
         help='use the STRING to separate numbers',
         dest='separator',
-        default=' ' if args.file else '\n',
+        default=default,
         type=str)
 
-    group1.add_argument(
+    group2.add_argument(
         '-W', '--words',
         help='Output the sequence as a single space-separeted line of words',
         dest='separator',
         const=' ', action='store_const')
-
-    group2 = parser.add_mutually_exclusive_group()
-
-    group2.add_argument(
-        '-f', '--format', metavar='FORMAT',
-        help='use python format style floating-point FORMAT',
-        dest='format_str',
-        type=str)
-
-    group2.add_argument(
-        '-p', '--pad', metavar='CHAR',
-        help='equalize width by padding with the padding provided',
-        dest='padding',
-        type=char_type)
-
-    group2.add_argument(
-        '-P', '--pad-spaces',
-        help='equalize width by padding with leading spaces',
-        dest='padding',
-        const=' ', action='store_const')
-
-    group2.add_argument(
-        '-w', '--equal-width',
-        help='equalize width by padding with leading zeroes',
-        dest='padding',
-        const='0', action='store_const')
     
     args = parser.parse_known_args()[0]
     
@@ -260,7 +264,7 @@ def main():
     # The following statement creates a list of integers using the
     # range specified by first, last, and increment. The map
     # transforms the list into a list of interger strings using the
-    # format given. separate places the separator between each element.
+    # format given.
     sequence = map(format_str.format,  # Apply format
                map(format_type,        # Apply type
                count(args.first, args.increment) if args.file else 
