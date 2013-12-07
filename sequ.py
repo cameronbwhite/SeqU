@@ -185,8 +185,8 @@ def longest_roman(n):
         i += 1
     return (i + 1) + (n // 1000)
 
-def separate(separator, iterable):
-    """ seperate generates a iterable with the
+def interweave(separator, iterable):
+    """ interweave generates a iterable with the
     separator element between every element of the
     given iterable. """
     it = iter(iterable)
@@ -271,7 +271,7 @@ def main():
         for i, line in zip(sequence, args.file):
             print('{}{}{}'.format(i, separator, line), end='')
     else:
-        for i in separate(separator, sequence):
+        for i in interweave(separator, sequence):
             print(i, end='')
         print()
 
