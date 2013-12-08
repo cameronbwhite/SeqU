@@ -29,7 +29,7 @@ TYPE_AND_FORMAT_WORD = {
 class NumberLines(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         namespace.__setattr__(self.dest, values)
-        namespace.last = 1
+        namespace.last = None
 
 def char_type(string):
     """ Function which is used as a type for argparse.
@@ -221,11 +221,13 @@ def main():
             map(lambda number: str(number).split('.'), 
                 [args.first, args.last, args.increment])))
     
+    format_argument = args.first if args.file else args.last 
+
     # Determine the format type
     try:
         format_type = TYPE_AND_FORMAT_WORD[args.format_word.lower()]
     except (KeyError, AttributeError):
-        format_type = type(args.last)
+        format_type = type(format_argument)
         format_type = float if format_type is int else format_type
    
     # Determine the format character
@@ -233,15 +235,15 @@ def main():
         format_character = FORMAT_WORD_AND_CHAR[args.format_word]
     except KeyError:
         word = TYPE_AND_FORMAT_WORD[format_type]
-        word = word.lower() if str(args.last).islower() else word.upper()
+        word = word.lower() if str(format_argument).islower() else word.upper()
         format_character = FORMAT_WORD_AND_CHAR[word]
 
     # Determine length of the largest number.
     if format_character in ['f']:
-        max_length = len(str(int(args.last))) + fractional_length
+        max_length = len(str(int(format_argument))) + fractional_length
         max_length += 1 if fractional_length else 0 # for the '.'
     elif format_character in ['r', 'R']:
-        max_length = longest_roman(args.last)
+        max_length = longest_roman(format_argument)
     elif format_character in ['a', 'A']:
         max_length = 1
     
