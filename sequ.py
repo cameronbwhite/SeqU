@@ -153,7 +153,7 @@ def parse():
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
 
-    while start < stop:
+    while start <= stop:
         yield float(start)
         start += step
 
@@ -244,7 +244,7 @@ def main():
     for i in separate(separator,    # Apply separator
              map(format_str.format, # Apply format
              map(format_type,       # Apply type
-             frange(float(args.first), (float(args.last)+1),
+             frange(float(args.first), float(args.last),
                     float(args.increment))))):
         print(i, end='')
 
