@@ -174,7 +174,7 @@ def parse():
 def frange(start, stop, step=1):
     """A range function that accepts floats"""
 
-    while start < stop:
+    while start <= stop:
         yield float(start)
         start += step
 
