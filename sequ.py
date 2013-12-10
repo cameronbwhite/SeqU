@@ -270,7 +270,7 @@ def main():
     sequence = map(format_str.format,  # Apply format
                map(format_type,        # Apply type
                count(args.first, args.increment) if args.file else 
-               frange(float(args.first), (float(args.last)+1),
+               frange(float(args.first), float(args.last),
                       float(args.increment))))
     
     if args.file: 
