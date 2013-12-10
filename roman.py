@@ -31,7 +31,7 @@ class Roman(object):
             self._roman = number
             _ = int(self)
             return
-        except AttributeError:
+        except (AttributeError, ValueError):
             pass
 
         number = int(number)

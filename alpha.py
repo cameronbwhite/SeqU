@@ -12,11 +12,12 @@ class Alpha:
         rolled back to 0 with mod.
         """
 
-        if type(value) is str:
-            if len(value) is not 1:
-                raise ValueError("one character only")
-        else:
+        try:
             value = chr(int(value)%26+ord('a')-1)
+        except ValueError:
+            if type(value) is str:
+                if len(value) is not 1:
+                    raise ValueError("one character only")
 
         if value.isalpha():
             self._value = value
