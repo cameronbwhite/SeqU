@@ -4,6 +4,7 @@ Extended implemenation of the Unix seq command
 
 ## usage ##
 
+<pre>
 usage: sequ.py [-h] [--version] [-s STRING | -W]  
                [-f FORMAT | -p CHAR | -P | -w]  
                [FIRST] [INCREMENT] LAST  
@@ -27,6 +28,7 @@ optional arguments:
   -p CHAR, --pad CHAR   equalize width by padding with the padding provided  
   -P, --pad-spaces      equalize width by padding with leading spaces  
   -w, --equal-width     equalize width by padding with leading zeroes  
+</pre>
 
 ## examples ##
 
