@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Cameron Brandon White
 
 NUMBER_TO_ROMAN = {
