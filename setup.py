@@ -6,7 +6,7 @@ import setuptools
 if __name__ == "__main__":
     setuptools.setup(
         name="SeqU",
-        version='1.1.0',
+        version='1.1.1',
         description="Extended implemenation of the Unix seq command",
         license="BSD",
         author="Cameron Brandon White",
